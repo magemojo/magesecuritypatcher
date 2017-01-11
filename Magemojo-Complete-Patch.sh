@@ -85,7 +85,7 @@ if [ -e $EDITION-$VERSION-patch.tar.gz ]
 then
   rm -rf $EDITION-$VERSION-patch.tar.gz
 fi
-wget --quiet http://magemojo.com/files/magento_versions/$EDITION-$VERSION-patch.tar.gz
+wget --quiet https://github.com/magesec/patchrepo/blob/master/$EDITION-$VERSION-patch.tar.gz
 if [ ! -e $EDITION-$VERSION-patch.tar.gz ]
 then
   echo "Failed to download patch file, version may not be available"
