@@ -74,7 +74,7 @@ EDITION=`echo "$EDITION" | awk '{print tolower($0)}'`
 while true; do
     read -p "Patch this install?" yn
     case $yn in
-        [Yy]* ) make install; break;;
+        [Yy]* ) break;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;
     esac
@@ -85,7 +85,7 @@ if [ -e $EDITION-$VERSION-patch.tar.gz ]
 then
   rm -rf $EDITION-$VERSION-patch.tar.gz
 fi
-wget --quiet https://github.com/magesec/patchrepo/blob/master/$EDITION-$VERSION-patch.tar.gz
+wget --quiet -O $EDITION-$VERSION-patch.tar.gz https://github.com/magesec/patchrepo/blob/master/$EDITION-$VERSION-patch.tar.gz?raw=true
 if [ ! -e $EDITION-$VERSION-patch.tar.gz ]
 then
   echo "Failed to download patch file, version may not be available"
@@ -146,8 +146,8 @@ else
   echo "Updating core...."
   tar -zxf $EDITION-$VERSION-patch.tar.gz
   echo "Core updated"
-  
-  echo "Updating custom template form keys..."  
+
+  echo "Updating custom template form keys..."
   #view.phtml
   SEARCH='$this->getSubmitUrl($_product)'
   RESULTS=`formkey view.phtml $SEARCH Y`
