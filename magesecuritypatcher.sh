@@ -142,6 +142,9 @@ then
     echo $FILE
   done
 else
+  echo "Renaming applied.patches.list"
+  LISTNAME="./app/etc/applied.patches.list.$NOW"
+  mv ./app/etc/applied.patches.list $LISTNAME
   echo "Patching files...."
   echo "Updating core...."
   tar -zxf $EDITION-$VERSION-patch.tar.gz
