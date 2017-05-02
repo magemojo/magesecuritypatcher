@@ -125,7 +125,7 @@ SEARCH='$this->getPostActionUrl()'
 RESULTS=`formkey register.phtml $SEARCH Y`
 TEMPLATELIST="$TEMPLATELIST $RESULTS"
 
-DELETELIST="./skin/adminhtml/default/default/media/flex.swf ./skin/adminhtml/default/default/media/uploader.swf ./skin/adminhtml/default/default/media/uploaderSingle.swf"
+DELETELIST="./skin/adminhtml/default/default/media/flex.swf ./skin/adminhtml/default/default/media/uploader.swf ./skin/adminhtml/default/default/media/uploaderSingle.swf ./skin/adminhtml/default/default/media/editor.swf"
 
 BACKUPLIST="$PATCHLIST $TEMPLATELIST $DELETELIST"
 
