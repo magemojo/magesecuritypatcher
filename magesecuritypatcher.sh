@@ -3,13 +3,13 @@
 function formkey {
   FILELIST=""
   FILENAME=$1
-  SEARCH=$2
+  SEARCH=`echo "${2//\'/''}"`
   DRY=$3
   for FILE in $(find app/design/frontend/ -name $FILENAME); do
     if [[ $FILE != "app/design/frontend/base"* ]]
     then
-      STRINGSEARCH=`grep -n $SEARCH $FILE | cut -d : -f1 | tr "\n" " " | tr -d "\r"`
-      if [ ! -z $STRINGSEARCH ]
+      STRINGSEARCH=`grep -n "$SEARCH" $FILE | cut -d : -f1 | tr "\n" " " | tr -d "\r"`
+      if [ ! -z "$STRINGSEARCH" ]
       then
         #check if formkey already exists
         FORMKEY=`grep -n '<?php echo $this->getBlockHtml('"'"'formkey'"'"'); ?>' $FILE | cut -d : -f1 | tr "\n" " " | tr -d "\r"`
@@ -62,7 +62,7 @@ fi
 
 echo 'Detecting Magento Version'
 VERSION=`php -r "require \"./app/Mage.php\"; echo Mage::getVersion(); "`
-EDITION=`php -r "require \"./app/Mage.php\"; echo Mage::getEdition(); "`
+EDITION="community"
 if [ -z $VERSION ] || [ -z $EDITION ]
 then
   echo "Failed to determine Magento Version exiting"
@@ -71,14 +71,17 @@ fi
 echo "Version $EDITION $VERSION"
 EDITION=`echo "$EDITION" | awk '{print tolower($0)}'`
 
-while true; do
-    read -p "Patch this install?" yn
-    case $yn in
-        [Yy]* ) break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
+if [ $DRYRUN -eq 0 ]
+then
+  while true; do
+      read -p "Patch this install?" yn
+      case $yn in
+          [Yy]* ) break;;
+          [Nn]* ) exit;;
+          * ) echo "Please answer yes or no.";;
+      esac
+  done
+fi
 
 echo "Requesting patch file..."
 if [ -e $EDITION-$VERSION-patch.tar.gz ]
@@ -97,43 +100,77 @@ echo "Creating manifest of template files that were ommited by standard patches"
 
 #view.phtml
 SEARCH='$this->getSubmitUrl($_product)'
-RESULTS=`formkey view.phtml $SEARCH Y`
+RESULTS=`formkey view.phtml "$SEARCH" Y`
 TEMPLATELIST="$TEMPLATELIST $RESULTS"
 
 #cart.phtml
 SEARCH='$this->getUrl('"'"'checkout/cart/updatePost'"'"')'
-RESULTS=`formkey cart.phtml $SEARCH Y`
+RESULTS=`formkey cart.phtml "$SEARCH" Y`
 TEMPLATELIST="$TEMPLATELIST $RESULTS"
 
 #login.phtml
 SEARCH='$this->getPostActionUrl()'
-RESULTS=`formkey login.phtml $SEARCH Y`
+RESULTS=`formkey login.phtml "$SEARCH" Y`
 TEMPLATELIST="$TEMPLATELIST $RESULTS"
 
 #form.phtml
 SEARCH='<form action="<?php echo $this->getAction() ?>" method="post" id="review-form">'
-RESULTS=`formkey form.phtml $SEARCH Y`
+RESULTS=`formkey form.phtml "$SEARCH" Y`
 TEMPLATELIST="$TEMPLATELIST $RESULTS"
-
+  
 #sidebar.phtml
 SEARCH='<form method="post" action="<?php echo $this->getFormActionUrl() ?>" id="reorder-validate-detail">'
-RESULTS=`formkey sidebar.phtml $SEARCH Y`
+RESULTS=`formkey sidebar.phtml "$SEARCH" Y`
 TEMPLATELIST="$TEMPLATELIST $RESULTS"
-
+ 
 #register.phtml
 SEARCH='$this->getPostActionUrl()'
-RESULTS=`formkey register.phtml $SEARCH Y`
+RESULTS=`formkey register.phtml "$SEARCH" Y`
 TEMPLATELIST="$TEMPLATELIST $RESULTS"
+  
+#shipping.phtml
+SEARCH='$this->__('"'"'Update Total'"'"')'
+RESULTS=`formkey shipping.phtml "$SEARCH" Y`
+TEMPLATELIST="$TEMPLATELIST $RESULTS"
+  
+#shipping.phtml
+SEARCH='<?php echo $this->__('"'"'Continue to Review Your Order'"'"') ?>'
+RESULTS=`formkey shipping.phtml "$SEARCH" Y`
+TEMPLATELIST="$TEMPLATELIST $RESULTS"
+
+#billing.phtml
+SEARCH='images/opc-ajax-loader.gif'
+RESULTS=`formkey billing.phtml "$SEARCH" Y`
+TEMPLATELIST="$TEMPLATELIST $RESULTS"
+
+#payment.phtml
+SEARCH='images/opc-ajax-loader.gif'
+RESULTS=`formkey payment.phtml "$SEARCH" Y`
+TEMPLATELIST="$TEMPLATELIST $RESULTS"
+
+#shipping.phtml
+SEARCH='images/opc-ajax-loader.gif'
+RESULTS=`formkey shipping.phtml "$SEARCH" Y`
+TEMPLATELIST="$TEMPLATELIST $RESULTS"
+
+#shipping_method.phtml
+SEARCH='images/opc-ajax-loader.gif'
+RESULTS=`formkey shipping_method.phtml "$SEARCH" Y`
+TEMPLATELIST="$TEMPLATELIST $RESULTS"
+
 
 DELETELIST="./skin/adminhtml/default/default/media/flex.swf ./skin/adminhtml/default/default/media/uploader.swf ./skin/adminhtml/default/default/media/uploaderSingle.swf ./skin/adminhtml/default/default/media/editor.swf"
 
 BACKUPLIST="$PATCHLIST $TEMPLATELIST $DELETELIST"
 
-NOW=$(date +"%s")
-BACKUPNAME="patch-backup-$NOW.tar.gz"
-echo "Creating backup tar...."
-tar -zcf $BACKUPNAME $BACKUPLIST > /dev/null 2>&1
-echo "$BACKUPNAME created"
+if [ $DRYRUN -eq 0 ]
+then
+  NOW=$(date +"%s")
+  BACKUPNAME="patch-backup-$NOW.tar.gz"
+  echo "Creating backup tar...."
+  tar -zcf $BACKUPNAME $BACKUPLIST > /dev/null 2>&1
+  echo "$BACKUPNAME created"
+fi
 
 if [ $DRYRUN -eq 1 ]
 then
@@ -153,32 +190,62 @@ else
   echo "Updating custom template form keys..."
   #view.phtml
   SEARCH='$this->getSubmitUrl($_product)'
-  RESULTS=`formkey view.phtml $SEARCH Y`
+  RESULTS=`formkey view.phtml "$SEARCH" N`
   TEMPLATELIST="$TEMPLATELIST $RESULTS"
 
   #cart.phtml
   SEARCH='$this->getUrl('"'"'checkout/cart/updatePost'"'"')'
-  RESULTS=`formkey cart.phtml $SEARCH Y`
+  RESULTS=`formkey cart.phtml "$SEARCH" N`
   TEMPLATELIST="$TEMPLATELIST $RESULTS"
 
   #login.phtml
   SEARCH='$this->getPostActionUrl()'
-  RESULTS=`formkey login.phtml $SEARCH Y`
+  RESULTS=`formkey login.phtml "$SEARCH" N`
   TEMPLATELIST="$TEMPLATELIST $RESULTS"
 
   #form.phtml
   SEARCH='<form action="<?php echo $this->getAction() ?>" method="post" id="review-form">'
-  RESULTS=`formkey form.phtml $SEARCH Y`
+  RESULTS=`formkey form.phtml "$SEARCH" N`
   TEMPLATELIST="$TEMPLATELIST $RESULTS"
-
+  
   #sidebar.phtml
   SEARCH='<form method="post" action="<?php echo $this->getFormActionUrl() ?>" id="reorder-validate-detail">'
-  RESULTS=`formkey sidebar.phtml $SEARCH Y`
+  RESULTS=`formkey sidebar.phtml "$SEARCH" N`
   TEMPLATELIST="$TEMPLATELIST $RESULTS"
-
+ 
   #register.phtml
   SEARCH='$this->getPostActionUrl()'
-  RESULTS=`formkey register.phtml $SEARCH Y`
+  RESULTS=`formkey register.phtml "$SEARCH" N`
+  TEMPLATELIST="$TEMPLATELIST $RESULTS"
+  
+  #shipping.phtml
+  SEARCH='$this->__('"'"'Update Total'"'"')'
+  RESULTS=`formkey shipping.phtml "$SEARCH" N`
+  TEMPLATELIST="$TEMPLATELIST $RESULTS"
+  
+  #shipping.phtml
+  SEARCH='<?php echo $this->__('"'"'Continue to Review Your Order'"'"') ?>'
+  RESULTS=`formkey shipping.phtml "$SEARCH" N`
+  TEMPLATELIST="$TEMPLATELIST $RESULTS"
+
+  #billing.phtml
+  SEARCH='images/opc-ajax-loader.gif'
+  RESULTS=`formkey billing.phtml "$SEARCH" N`
+  TEMPLATELIST="$TEMPLATELIST $RESULTS"
+
+  #payment.phtml
+  SEARCH='<?php echo $this->getChildHtml('"'"'methods'"'"') ?>'
+  RESULTS=`formkey payment.phtml "$SEARCH" N`
+  TEMPLATELIST="$TEMPLATELIST $RESULTS"
+
+  #shipping.phtml
+  SEARCH='images/opc-ajax-loader.gif'
+  RESULTS=`formkey shipping.phtml "$SEARCH" N`
+  TEMPLATELIST="$TEMPLATELIST $RESULTS"
+
+  #shipping_method.phtml
+  SEARCH='images/opc-ajax-loader.gif'
+  RESULTS=`formkey shipping_method.phtml "$SEARCH" N`
   TEMPLATELIST="$TEMPLATELIST $RESULTS"
 
   echo "Templates updated"
