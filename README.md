@@ -1,7 +1,8 @@
 # Mage Security Patcher
 
 ###Updates
-6/1/17 - Updated to include patch SUPEE-9676
+6/13/17 - Updated to include patches SUPEE-8167 and SUPEE-8967
+6/1/17 - Updated to include patch SUPEE-9767
 2/7/17 - Updated to include patch SUPEE-9652
 
 ###About
