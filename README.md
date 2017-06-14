@@ -27,7 +27,7 @@ Execute the patcher:
 
 `sh magesecuritypatcher.sh`
 
-A backup of overwritten / modified files will be created as:
+*A backup of overwritten / modified files will be created as:
 `patch-backup-<timestamp>.tar.gz`*
 
 ### Feedback
