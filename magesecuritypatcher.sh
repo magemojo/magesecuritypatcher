@@ -61,7 +61,14 @@ else
 fi
 
 echo 'Detecting Magento Version'
-VERSION=`php -r "require \"./app/Mage.php\"; echo Mage::getVersion(); "`
+if [ -f app/etc/local.xml ];
+then
+  VERSION=`php -r "require \"./app/Mage.php\"; echo Mage::getVersion(); "`
+fi
+if [ -f $i/app/etc/env.php ];
+then
+  VERSION=`php -r "print_r(json_decode(str_replace('magento/product-community-edition','version',file_get_contents(\"composer.json\")))->require->version);"`
+fi
 EDITION="community"
 if [ -z $VERSION ] || [ -z $EDITION ]
 then
