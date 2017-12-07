@@ -2,6 +2,8 @@
 
 ### Updates
 
+11/28/17 - Updated to include patch SUPEE-10415
+
 9/15/17 - Updated to include patch SUPEE-10266
 
 9/12/17 - Updated to include patch SUPEE-10336
