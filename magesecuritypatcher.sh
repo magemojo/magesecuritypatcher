@@ -2,16 +2,14 @@
 
 getopts q QUIET
 getopts d DRYRUN
-getopts r AUTOROLLBACK
 getopts h HELP
 
 if [ $HELP = "h" ]
 then
-  echo "Usage: magesecuritypatcher.sh [-h] [-q] [-d] [-r]"
+  echo "Usage: magesecuritypatcher.sh [-h] [-q] [-d]"
   echo "  -h  Show this help message"
   echo "  -q  Quiet - don't show disclaimer and except all prompts"
   echo "  -d  Dryrun - Run peliminary checks for version an backup creation but do not upgrade"
-  echo "  -r  Magento 2 Only: Automatically rollback if errors are detected"
   exit 0
 fi
 
@@ -319,7 +317,9 @@ else
   LINE=`echo "$VERSIONING" | grep "$BRANCH "`
   LATEST=`echo $LINE | awk '{print $2;}'`
   FILESBACKUP=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.backup.manifest?raw=true)
+  echo $FILESBACKUP
   DBBACKUP=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.dbbackup.manifest?raw=true)
+  echo $DBBACKUP
   DELETELIST=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.delete.manifest?raw=true)
   DBHOST=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["host"];'`
   DBNAME=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["dbname"];'`
@@ -416,25 +416,20 @@ else
     fi
     if [ $ROLLBACK -eq 1 ]
     then
-      if [ $AUTOROLLBACK = "r" ]
+      echo "Starting Rollback..."
+      if [[ ! -z "$DELETELIST" ]]
       then
-        echo "Starting Rollback..."
-        if [[ ! -z "$DELETELIST" ]]
-        then
-          rm -rf $DELETELIST
-        fi
-        tar -zxf patch-backup-$NOW.tar.gz
-        if [[ ! -z "$DBBACKUP" ]]
-        then
-          zcat database-backup-$NOW.sql.gz | mysql -u $DBUSER -p$DBPASS -h $DBHOST $DBNAME
-        fi
-        $PHP bin/magento setup:di:compile
-        $PHP bin/magento cache:flush
-        $PHP bin/magento maintenance:disable
-        echo "Rollback Complete"
-      else
-        echo "Errors were encountered durring the upgrade process, it is recommended that you manually rollback using the backups in backup-$NOW.tar.gz"
+        rm -rf $DELETELIST
       fi
+      tar -zxf patch-backup-$NOW.tar.gz
+      if [[ ! -z "$DBBACKUP" ]]
+      then
+        zcat database-backup-$NOW.sql.gz | mysql -u $DBUSER -p$DBPASS -h $DBHOST $DBNAME
+      fi
+      $PHP bin/magento setup:di:compile
+      $PHP bin/magento cache:flush
+      $PHP bin/magento maintenance:disable
+      echo "Rollback Complete"
     fi
   fi
 fi
