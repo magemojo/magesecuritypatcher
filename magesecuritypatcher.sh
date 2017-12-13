@@ -334,38 +334,38 @@ else
   if [ -z "$LATEST" ]
   then
     echo "Could not find latest version for branch $BRANCH exiting..."
-    exit 0;
+    exit 1
   fi
-  if [ -z "$FILESBACKUP" ]
+  if [ -z "$FILESBACKUP" ] || [ "$FILESBACKUP" = "Not Found" ]
   then
     echo "Could not retrieve changed files list to backup exiting..."
-    exit 0;
+    exit 1
   fi
   if [ -z "$DBHOST" ]
   then
     echo "Could not retrieve database host exiting..."
-    exit 0;
+    exit 1
   fi
   if [ -z "$DBNAME" ]
   then
     echo "Could not retrieve database name exiting..."
-    exit 0;
+    exit 1
   fi
   if [ -z "$DBUSER" ]
   then
     echo "Could not retrieve database user exiting..."
-    exit 0;
+    exit 1
   fi
   if [ -z "$DBPASS" ]
   then
     echo "Could not retrieve database password exiting..."
-    exit 0;
+    exit 1
   fi
   NOW=$(date +"%s")
   if [ $VERSION = $LATEST ]
   then
     echo "Magento $VERSION is already the latest of the $BRANCH branch, exiting..."
-    exit 0
+    exit 1
   fi
   if [ $DRYRUN != "d" ]
   then
