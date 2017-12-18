@@ -372,8 +372,9 @@ else
   fi
   if [ $DRYRUN != "d" ]
   then
+    $SETUPTABLE="setup_module"
     echo 'Creating Database Backup'
-    mysqldump -u $DBUSER -h $DBHOST $DBNAME --tables $DBPREFIXsetup_module $DBBACKUP | gzip > database-backup-$NOW.sql.gz
+    mysqldump -u $DBUSER -h $DBHOST $DBNAME --tables $DBPREFIX$SETUPTABLE $DBBACKUP | gzip > database-backup-$NOW.sql.gz
     echo 'Creating Files Backup'
     tar -czf patch-backup-$NOW.tar.gz $FILESBACKUP database-backup-$NOW.sql.gz
     rm database-backup-$NOW.sql.gz
