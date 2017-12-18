@@ -318,7 +318,6 @@ else
   LATEST=`echo $LINE | awk '{print $2;}'`
   FILESBACKUP=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.backup.manifest?raw=true)
   DBBACKUP=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.dbbackup.manifest?raw=true)
-  DELETELIST=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.delete.manifest?raw=true)
   DBHOST=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["host"];'`
   DBNAME=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["dbname"];'`
   DBUSER=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["username"];'`
@@ -370,11 +369,13 @@ else
   fi
   if [ $DRYRUN != "d" ]
   then
-    $SETUPTABLE="setup_module"
+    echo "Generate prebackup filelist"
+    find . -type f | grep -v './var/' | grep -v './pub/media/' > preupgradefilelist-$NOW.txt
+    SETUPTABLE="setup_module"
     echo 'Creating Database Backup'
     mysqldump -u $DBUSER -p$DBPASS -h $DBHOST $DBNAME --tables $DBPREFIX$SETUPTABLE $DBBACKUP | gzip > database-backup-$NOW.sql.gz
     echo 'Creating Files Backup'
-    tar -czf patch-backup-$NOW.tar.gz $FILESBACKUP database-backup-$NOW.sql.gz
+    tar -czf patch-backup-$NOW.tar.gz $FILESBACKUP database-backup-$NOW.sql.gz preupgradefilelist-$NOW.txt
     rm database-backup-$NOW.sql.gz
     echo "Upgrading to $LATEST"
     $PHP bin/magento maintenance:enable
@@ -421,10 +422,7 @@ else
     then
       echo "Starting Rollback..."
       $PHP bin/magento maintenance:enable
-      if [[ ! -z "$DELETELIST" ]]
-      then
-        rm -rf $DELETELIST
-      fi
+      find . -type f | grep -v './var/' | grep -v './pub/media/' > postupgradefilelist-$NOW.txt
       tar -zxf patch-backup-$NOW.tar.gz
       if [[ ! -z "$DBBACKUP" ]]
       then
@@ -434,6 +432,8 @@ else
       rm -rf var/page_cache/*
       rm -rf var/generation/*
       rm -rf var/di/*
+      DELETELIST=`grep -Fxv -f postupgradefilelist-$NOW.txt preupgradefilelist-$NOW.txt | grep -v $NOW`
+      echo $DELETELIST
       $PHP bin/magento setup:di:compile
       $PHP bin/magento cache:flush
       $PHP bin/magento maintenance:disable
