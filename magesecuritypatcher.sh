@@ -327,6 +327,9 @@ else
   DBPASS=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["password"];'`
   DBPREFIX=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["table_prefix"];'`
   DBBACKUP=`echo $DBBACKUP | tr '\n' ' '`
+  MYSQL_PWD=$DBPASS
+  BASEURL=`mysql -u $DBUSER -h $DBHOST $DBNAME -e "select value from $DBPREFIXcoreconfig_data where scope = 'default' and scope_id = 0 and path = 'web/unsecure/base_url'"`
+  BASELINECHECK=`curl -s -L $BASEURL`
   if [ ! -z "$DBPREFIX" ]
   then
     DBBACKUP=$(sed 's/^/$DBPREFIX/' <<< $DBBACKUP)
@@ -369,21 +372,11 @@ else
   fi
   if [ $DRYRUN != "d" ]
   then
-    if [[ ! -z "$DBBACKUP" ]]
-    then
-      echo 'Creating Database Backup'
-      mysqldump -u $DBUSER -p$DBPASS -h $DBHOST $DBNAME --tables $DBBACKUP | gzip > database-backup-$NOW.sql.gz
-    else
-      echo 'Database will not be changed for this upgrade'
-    fi
+    echo 'Creating Database Backup'
+    mysqldump -u $DBUSER -h $DBHOST $DBNAME --tables $DBPREFIXsetup_module $DBBACKUP | gzip > database-backup-$NOW.sql.gz
     echo 'Creating Files Backup'
-    if [[ ! -z "$DBBACKUP" ]]
-    then
-      tar -czf patch-backup-$NOW.tar.gz $FILESBACKUP database-backup-$NOW.sql.gz
-      rm database-backup-$NOW.sql.gz
-    else
-      tar -czf patch-backup-$NOW.tar.gz $FILESBACKUP
-    fi
+    tar -czf patch-backup-$NOW.tar.gz $FILESBACKUP database-backup-$NOW.sql.gz
+    rm database-backup-$NOW.sql.gz
     echo "Upgrading to $LATEST"
     $PHP bin/magento maintenance:enable
     ROLLBACK=0
@@ -411,12 +404,22 @@ else
         else
           $PHP bin/magento cache:flush
           $PHP bin/magento maintenance:disable
+          #TODO: fetch home page and check for errors
+          SANITYCHECK=`curl -s -L $BASEURL`
+          DIFF=`diff <(echo($BASELINECHECK) <(echo $SANITYCHECK)`
+          DIFF=`echo "$DIFF" | tr '[:upper:]' '[:lower:]'`
+          if [[ $DIFF = *"error"* ]] || [[ $DIFF = *"exception"* ]]
+          then
+            ROLLBACK=1
+            echo "Sanity check failed, errors on homepage"
+          fi
         fi
       fi
     fi
     if [ $ROLLBACK -eq 1 ]
     then
       echo "Starting Rollback..."
+      $PHP bin/magento maintenance:enable
       if [[ ! -z "$DELETELIST" ]]
       then
         rm -rf $DELETELIST
