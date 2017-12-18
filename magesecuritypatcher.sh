@@ -317,9 +317,7 @@ else
   LINE=`echo "$VERSIONING" | grep "$BRANCH "`
   LATEST=`echo $LINE | awk '{print $2;}'`
   FILESBACKUP=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.backup.manifest?raw=true)
-  echo $FILESBACKUP
   DBBACKUP=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.dbbackup.manifest?raw=true)
-  echo $DBBACKUP
   DELETELIST=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.delete.manifest?raw=true)
   DBHOST=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["host"];'`
   DBNAME=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["dbname"];'`
@@ -397,8 +395,8 @@ else
         ROLLBACK=1
         echo "Magento setup upgrade step failed"
       else
-        $PHP bin/magento setup:di:compile
-        if [ $? != 0 ]
+        LOG=`$PHP bin/magento setup:di:compile`
+        if [ $? != 0 ] || [ $LOG = *"Errors during compilation*" ]
         then
           ROLLBACK=1
           echo "Magento compiler step failed"
