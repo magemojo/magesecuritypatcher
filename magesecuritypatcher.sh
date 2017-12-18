@@ -325,8 +325,7 @@ else
   DBPASS=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["password"];'`
   DBPREFIX=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["table_prefix"];'`
   DBBACKUP=`echo $DBBACKUP | tr '\n' ' '`
-  MYSQL_PWD=$DBPASS
-  BASEURL=`mysql -u $DBUSER -h $DBHOST $DBNAME -e "select value from $DBPREFIXcoreconfig_data where scope = 'default' and scope_id = 0 and path = 'web/unsecure/base_url'"`
+  BASEURL=`mysql -u $DBUSER -h -p$DBPASS $DBHOST $DBNAME -e "select value from $DBPREFIXcoreconfig_data where scope = 'default' and scope_id = 0 and path = 'web/unsecure/base_url'"`
   BASELINECHECK=`curl -s -L $BASEURL`
   if [ ! -z "$DBPREFIX" ]
   then
@@ -372,7 +371,7 @@ else
   then
     $SETUPTABLE="setup_module"
     echo 'Creating Database Backup'
-    mysqldump -u $DBUSER -h $DBHOST $DBNAME --tables $DBPREFIX$SETUPTABLE $DBBACKUP | gzip > database-backup-$NOW.sql.gz
+    mysqldump -u $DBUSER -h -p$DBPASS $DBHOST $DBNAME --tables $DBPREFIX$SETUPTABLE $DBBACKUP | gzip > database-backup-$NOW.sql.gz
     echo 'Creating Files Backup'
     tar -czf patch-backup-$NOW.tar.gz $FILESBACKUP database-backup-$NOW.sql.gz
     rm database-backup-$NOW.sql.gz
