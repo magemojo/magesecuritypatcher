@@ -370,7 +370,7 @@ else
   if [ $DRYRUN != "d" ]
   then
     echo "Generate prebackup filelist"
-    find . -type f | grep -v './var/' | grep -v './pub/media/' > preupgradefilelist-$NOW.txt
+    find . | grep -v './var/' | grep -v './pub/media/' > preupgradefilelist-$NOW.txt
     SETUPTABLE="setup_module"
     echo 'Creating Database Backup'
     mysqldump -u $DBUSER -p$DBPASS -h $DBHOST $DBNAME --tables $DBPREFIX$SETUPTABLE $DBBACKUP | gzip > database-backup-$NOW.sql.gz
@@ -422,18 +422,19 @@ else
     then
       echo "Starting Rollback..."
       $PHP bin/magento maintenance:enable
-      find . -type f | grep -v './var/' | grep -v './pub/media/' > postupgradefilelist-$NOW.txt
+      find . | grep -v './var/' | grep -v './pub/media/' > postupgradefilelist-$NOW.txt
       tar -zxf patch-backup-$NOW.tar.gz
       if [[ ! -z "$DBBACKUP" ]]
       then
         zcat database-backup-$NOW.sql.gz | mysql -u $DBUSER -p$DBPASS -h $DBHOST $DBNAME
       fi
+      DELETELIST=`grep -Fxv -f postupgradefilelist-$NOW.txt preupgradefilelist-$NOW.txt | grep -v $NOW`
+      rm -rf $DELETELIST
       rm -rf var/cache/*
       rm -rf var/page_cache/*
       rm -rf var/generation/*
       rm -rf var/di/*
-      DELETELIST=`grep -Fxv -f postupgradefilelist-$NOW.txt preupgradefilelist-$NOW.txt | grep -v $NOW`
-      echo $DELETELIST
+      $PHP bin/magento setup:upgrade
       $PHP bin/magento setup:di:compile
       $PHP bin/magento cache:flush
       $PHP bin/magento maintenance:disable
