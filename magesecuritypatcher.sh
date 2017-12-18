@@ -389,6 +389,7 @@ else
       rm -rf var/cache/*
       rm -rf var/page_cache/*
       rm -rf var/generation/*
+      rm -rf var/di/*
       $PHP bin/magento setup:upgrade
       if [ $? != 0 ]
       then
@@ -429,6 +430,10 @@ else
       then
         zcat database-backup-$NOW.sql.gz | mysql -u $DBUSER -p$DBPASS -h $DBHOST $DBNAME
       fi
+      rm -rf var/cache/*
+      rm -rf var/page_cache/*
+      rm -rf var/generation/*
+      rm -rf var/di/*
       $PHP bin/magento setup:di:compile
       $PHP bin/magento cache:flush
       $PHP bin/magento maintenance:disable
