@@ -326,7 +326,7 @@ else
   DBPREFIX=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["table_prefix"];'`
   DBBACKUP=`echo $DBBACKUP | tr '\n' ' '`
   CORE="core_config_data"
-  BASEURL=`mysql -u $DBUSER -h -p$DBPASS $DBHOST $DBNAME -e "select value from $DBPREFIX$CORE where scope = 'default' and scope_id = 0 and path = 'web/unsecure/base_url'"`
+  BASEURL=`mysql -u $DBUSER -h -p$DBPASS -h $DBHOST $DBNAME -e "select value from $DBPREFIX$CORE where scope = 'default' and scope_id = 0 and path = 'web/unsecure/base_url'"`
   BASELINECHECK=`curl -s -L $BASEURL`
   if [ ! -z "$DBPREFIX" ]
   then
@@ -397,7 +397,7 @@ else
       else
         LOG=`$PHP bin/magento setup:di:compile`
         echo $LOG
-        if [ $? != 0 ] || [ "$LOG" = *"Errors during compilation"* ]
+        if [ $? != 0 ] || [[ $LOG = *"Errors during compilation"* ]]
         then
           ROLLBACK=1
           echo "Magento compiler step failed"
