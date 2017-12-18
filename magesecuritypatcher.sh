@@ -396,6 +396,7 @@ else
         echo "Magento setup upgrade step failed"
       else
         LOG=`$PHP bin/magento setup:di:compile`
+        echo $LOG
         if [ $? != 0 ] || [ "$LOG" = *"Errors during compilation"* ]
         then
           ROLLBACK=1
@@ -403,7 +404,7 @@ else
         else
           $PHP bin/magento cache:flush
           $PHP bin/magento maintenance:disable
-          #TODO: fetch home page and check for errors
+          echo "Checking $BASEURL"
           SANITYCHECK=`curl -s -L $BASEURL`
           DIFF=`diff <(echo($BASELINECHECK) <(echo $SANITYCHECK)`
           DIFF=`echo "$DIFF" | tr '[:upper:]' '[:lower:]'`
