@@ -56,7 +56,7 @@ then
   echo "applied to. Any modifications that were made to core files that      "
   echo "patches have been applied to will be overwritten as a result.        "
   echo "                                                                     "
-  echo "Usage: sh magesecuritypatcher.sh [-h] [-q] [-d] [-r]                 "
+  echo "Usage: sh magesecuritypatcher.sh [-h] [-q] [-d]                      "
   echo "Executing a dryrun will list the files to be overwritten / modified. "
   echo "                                                                     "
   echo "A backup of overwritten / modified files will be created as          "
