@@ -88,7 +88,7 @@ then
   else
     EDITION="enterprise"
   fi
-  VERSION=`cat composer.json | jq -r '.version'`
+  VERSION=`cat composer.json | jq -r '.["require"] | .["magento/product-community-edition"]'`
 fi
 if [ -z $VERSION ] || [ -z $EDITION ]
 then
@@ -325,7 +325,7 @@ else
   DBPREFIX=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["table_prefix"];'`
   DBBACKUP=`echo $DBBACKUP | tr '\n' ' '`
   CORE="core_config_data"
-  BASEURL=`mysql -u $DBUSER -h -p$DBPASS -h $DBHOST $DBNAME -e "select value from $DBPREFIX$CORE where scope = 'default' and scope_id = 0 and path = 'web/unsecure/base_url'"`
+  BASEURL=`mysql -sN -u $DBUSER -p$DBPASS -h $DBHOST $DBNAME -e "select value from $DBPREFIX$CORE where scope = 'default' and scope_id = 0 and path = 'web/unsecure/base_url'"`
   BASELINECHECK=`curl -s -L $BASEURL`
   if [ ! -z "$DBPREFIX" ]
   then
@@ -381,7 +381,7 @@ else
     $PHP bin/magento maintenance:enable
     ROLLBACK=0
     composer require $FULLEDITION $LATEST --no-update
-    composer update
+    composer upgrade
     if [ $? != 0 ]
     then
       ROLLBACK=1
