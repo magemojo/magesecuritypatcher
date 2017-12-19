@@ -381,7 +381,7 @@ else
     $PHP bin/magento maintenance:enable
     ROLLBACK=0
     composer require $FULLEDITION $LATEST --no-update
-    composer upgrade
+    composer update
     if [ $? != 0 ]
     then
       ROLLBACK=1
