@@ -29,16 +29,21 @@ Works for Magento 1 & 2 Community Versions 1.5.0.1 - Current
 This script applies all applicable patches for your Magento version. It will overwite any previously patched files.  It will also overwrite any modifications made to core files within the scope of core files being patched.
 
 ### Usage
+
+Make the script executable, running as `sh magesecuritypatcher.sh` can throw errors under some sh shells.
+
+chmod a+x magesecuritypatcher.sh
+
 Executing a dryrun will list the files to be overwritten / modified:
 
-`sh magesecuritypatcher.sh [-h] [-q] [-d]`
+`./magesecuritypatcher.sh [-h] [-q] [-d]`
   -h  Show this help message
   -q  Quiet - don't show disclaimer and except all prompts
   -d  Dryrun - Run peliminary checks for version an backup creation but do not upgrade
 
 Execute the patcher:
 
-`sh magesecuritypatcher.sh`
+`./magesecuritypatcher.sh`
 
 *A backup of overwritten / modified files will be created as:
 `patch-backup-<timestamp>.tar.gz`*
