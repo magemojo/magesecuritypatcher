@@ -408,7 +408,7 @@ else
           $PHP bin/magento maintenance:disable
           echo "Checking $BASEURL"
           SANITYCHECK=`curl -s -L $BASEURL`
-          DIFF=`diff <(echo($BASELINECHECK) <(echo $SANITYCHECK)`
+          DIFF=`diff <(echo $BASELINECHECK) <(echo $SANITYCHECK)`
           DIFF=`echo "$DIFF" | tr '[:upper:]' '[:lower:]'`
           if [[ $DIFF = *"error"* ]] || [[ $DIFF = *"exception"* ]]
           then
