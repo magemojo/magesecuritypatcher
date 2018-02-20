@@ -32,7 +32,9 @@ This script applies all applicable patches for your Magento version. It will ove
 
 Make the script executable, running as `sh magesecuritypatcher.sh` can throw errors under some sh shells.
 
+```
 chmod a+x magesecuritypatcher.sh
+```
 
 Executing a dryrun will list the files to be overwritten / modified:
 
@@ -43,15 +45,19 @@ Executing a dryrun will list the files to be overwritten / modified:
 
 Execute the patcher:
 
-`./magesecuritypatcher.sh`
+```
+./magesecuritypatcher.sh
+```
 
 *A backup of overwritten / modified files will be created as:
 `patch-backup-<timestamp>.tar.gz`*
 
-###Magento 1 Patching Methodology
+### Magento 1 Patching Methodology
+
 Magento 1 is patched through incremental updates to versions called SUPEE files. These files update the core Magento files to patch various security vulnerabilities and fix functionality. Due to their nature if the file they are updating does not precisely match what it is expecting due to some change in the file it is trying to update the install will fail. Due to the high likelihood of this occurring our patch system works by overwriting the core files with ones that are fully patched. Some patches also add form keys to templates which will not apply to templates outside of the default path. Our patching system will also attempt to add these necessary form keys to customized templates giving the patch a better chance of a successful install. However, sites should still be fully tested after any patching is done. A backup file will be created before the patching process begins in the website root.
 
-###Magento 2 Patching Methodology
+### Magento 2 Patching Methodology
+
 Magento 2 is patched via upgrades to build versions of the software. These versions will contain both bug fixes and security updates. As these are technically version upgrades there can be issues and incompatibilities with other installed modules. The patching system will perform these upgrades to the build version to bring it to the latest minor version of magento 2, ie. 2.0.10 to 2.0.17. It will not upgrade from 2.0 to 2.1 as that is a larger upgrade of functionality. The system will create a backup of any files that will be changed by the upgrade as well as any database tables that may be effected. The system will then put the site into maintenance mode and run the composer update to perform the upgrade, then recompile, then reindex. On success it will take the site out of maintenance mode. If any of these steps fail it will automatically rollback the site from the backups and again take the site out of maintenance mode. You will receive notification of the results of the patch with any relevant error reports.
 
 ### Feedback
