@@ -2,6 +2,8 @@
 
 ### Updates
 
+2/27/18 - Updated for SUPEE-10570 and Magento 2 Versions 2.0.18 / 2.1.12 / 2.2.3
+
 12/19/17 - Support for Magento 2 Community Released
 
 11/28/17 - Updated to include patch SUPEE-10415
