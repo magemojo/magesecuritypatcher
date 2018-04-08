@@ -68,8 +68,13 @@ echo 'Detecting Magento Version'
 if [ -f app/etc/local.xml ];
 then
   MAGENTOBRANCH=1
-  EDITION=`php -r "require \"./app/Mage.php\"; echo Mage::getEdition(); "`
   VERSION=`php -r "require \"./app/Mage.php\"; echo Mage::getVersion(); "`
+  if [[ "$VERSION" = "1.5."* ]] || [[ "$VERSION" = "1.6."* ]]
+  then
+    EDITION="community"
+  else
+    EDITION=`php -r "require \"./app/Mage.php\"; echo Mage::getEdition(); "`  
+  fi
 fi
 if [ -f app/etc/env.php ];
 then
@@ -119,7 +124,11 @@ then
   exit
 fi
 
-if [ $MAGENTOBRANCH -eq 1 ]
+if [ -z $MAGENTOBRANCH ]
+then
+  echo "Magento version could not be determined"
+  exit
+else if [ $MAGENTOBRANCH -eq 1 ]
 then
   echo "Requesting patch file..."
   if [ -e $EDITION-$VERSION-patch.tar.gz ]
