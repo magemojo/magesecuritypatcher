@@ -128,7 +128,9 @@ if [ -z $MAGENTOBRANCH ]
 then
   echo "Magento version could not be determined"
   exit
-else if [ $MAGENTOBRANCH -eq 1 ]
+fi
+
+if [ $MAGENTOBRANCH -eq 1 ]
 then
   echo "Requesting patch file..."
   if [ -e $EDITION-$VERSION-patch.tar.gz ]
