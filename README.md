@@ -2,6 +2,8 @@
 
 ### Updates
 
+10/17/18 - Updated for Magento 2 versions 2.1.15 / 2.2.6
+
 9/19/18 - Updated to include patch SUPEE-10888
 
 6/28/18 - Updated to include patch SUPEE-10752
