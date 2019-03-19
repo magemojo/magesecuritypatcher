@@ -2,6 +2,8 @@
 
 ### Updates
 
+03/19/19 - Updated to include Authorize.net MD5 Patch and Admin Dashboard Charts Patch
+
 11/29/18 - Updated to include patch SUPEE-10975 and PHP 7 compatibility updates
 
 10/17/18 - Updated for Magento 2 versions 2.1.15 / 2.2.6
