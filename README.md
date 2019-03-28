@@ -2,6 +2,8 @@
 
 ### Updates
 
+03/28/19 - Updated to include patch SUPEE-11086
+
 03/19/19 - Updated to include Authorize.net MD5 Patch and Admin Dashboard Charts Patch
 
 11/29/18 - Updated to include patch SUPEE-10975 and PHP 7 compatibility updates
