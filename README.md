@@ -2,6 +2,8 @@
 
 ### Updates
 
+06/26/19 - Updated to include patch SUPEE-11155
+
 03/28/19 - Updated to include patch SUPEE-11086
 
 03/19/19 - Updated to include Authorize.net MD5 Patch and Admin Dashboard Charts Patch
