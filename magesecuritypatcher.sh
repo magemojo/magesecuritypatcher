@@ -208,7 +208,7 @@ then
   TEMPLATELIST="$TEMPLATELIST $RESULTS"
 
 
-  DELETELIST="./skin/adminhtml/default/default/media/flex.swf ./skin/adminhtml/default/default/media/uploader.swf ./skin/adminhtml/default/default/media/uploaderSingle.swf ./skin/adminhtml/default/default/media/editor.swf"
+  DELETELIST="./skin/adminhtml/default/default/media/flex.swf ./skin/adminhtml/default/default/media/uploader.swf ./skin/adminhtml/default/default/media/uploaderSingle.swf ./skin/adminhtml/default/default/media/editor.swf ./lib/phpseclib/PHP/Compat/Function/str_split.php ./lib/phpseclib/PHP/Compat/Function/bcpowmod.php ./lib/phpseclib/PHP/Compat/Function/array_fill.php"
 
   BACKUPLIST="$PATCHLIST $TEMPLATELIST $DELETELIST"
 
