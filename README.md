@@ -2,6 +2,8 @@
 
 ### Updates
 
+05/14/20 - Updated to include patch SUPEE-11314
+
 02/07/20 - Updated to include patch SUPEE-11295
 
 10/11/19 - Updated to include patch SUPEE-11219
