@@ -83,4 +83,4 @@ Execute the patcher:
 Magento 1 is patched through incremental updates to versions called SUPEE files. These files update the core Magento files to patch various security vulnerabilities and fix functionality. Due to their nature if the file they are updating does not precisely match what it is expecting due to some change in the file it is trying to update the install will fail. Due to the high likelihood of this occurring our patch system works by overwriting the core files with ones that are fully patched. Some patches also add form keys to templates which will not apply to templates outside of the default path. Our patching system will also attempt to add these necessary form keys to customized templates giving the patch a better chance of a successful install. However, sites should still be fully tested after any patching is done. A backup file will be created before the patching process begins in the website root.
 
 ### Feedback
-Please contact us at the [MageMojo](https://magemojo.com/contact.php)
+Please contact us at [MageMojo](https://magemojo.com/contact.php)
