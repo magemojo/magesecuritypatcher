@@ -1,3 +1,5 @@
+[![MageMojo](https://magetalk.com/wp-content/uploads/2017/11/q7xJZaM5TImMN7mUIb0c.png)](https://magemojo.com/)
+
 # MageMojo Magento 1 Security Patcher
 
 ### Updates
