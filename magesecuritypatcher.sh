@@ -137,7 +137,7 @@ then
   then
     rm -rf $EDITION-$VERSION-patch.tar.gz
   fi
-  wget --quiet -O $EDITION-$VERSION-patch.tar.gz https://github.com/magesec/patchrepo/blob/master/$EDITION-$VERSION-patch.tar.gz?raw=true
+  wget --quiet -O $EDITION-$VERSION-patch.tar.gz https://github.com/magemojo/patchrepo/blob/master/$EDITION-$VERSION-patch.tar.gz?raw=true
   if [ ! -e $EDITION-$VERSION-patch.tar.gz ]
   then
     echo "Failed to download patch file, version may not be available"
@@ -324,11 +324,11 @@ else
   MINOR=`echo "$VERSION" | awk -F'.' '{print $2}'`
   BRANCH="$MAJOR.$MINOR"
   echo "Getting Backup Manifests for $BRANCH Branch"
-  VERSIONING=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/versioning.conf?raw=true)
+  VERSIONING=$(curl -s -L https://github.com/magemojo/patchrepo/blob/master/manifests/versioning.conf?raw=true)
   LINE=`echo "$VERSIONING" | grep "$BRANCH "`
   LATEST=`echo $LINE | awk '{print $2;}'`
-  FILESBACKUP=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.backup.manifest?raw=true)
-  DBBACKUP=$(curl -s -L https://github.com/magesec/patchrepo/blob/master/manifests/$EDITION/$VERSION.dbbackup.manifest?raw=true)
+  FILESBACKUP=$(curl -s -L https://github.com/magemojo/patchrepo/blob/master/manifests/$EDITION/$VERSION.backup.manifest?raw=true)
+  DBBACKUP=$(curl -s -L https://github.com/magemojo/patchrepo/blob/master/manifests/$EDITION/$VERSION.dbbackup.manifest?raw=true)
   DBHOST=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["host"];'`
   DBNAME=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["dbname"];'`
   DBUSER=`php -r '$return =  include "./app/etc/env.php"; print $return["db"]["connection"]["default"]["username"];'`
