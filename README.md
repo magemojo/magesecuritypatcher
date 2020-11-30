@@ -2,6 +2,8 @@
 
 ### Updates
 
+11/30/20 - Applied patch update APSB20-47 from OpenMage Project
+
 06/25/20 - Updated to include patch SUPEE-11346
 
 05/14/20 - Updated to include patch SUPEE-11314
