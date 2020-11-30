@@ -2,7 +2,7 @@
 
 ### Updates
 
-11/30/20 - Applied patch update APSB20-47 from OpenMage Project
+11/30/20 - Applied patch update APSB20-47 from OpenMage Project - https://github.com/OpenMage/magento-lts/pull/1138
 
 06/25/20 - Updated to include patch SUPEE-11346
 
