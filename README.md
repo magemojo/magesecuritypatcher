@@ -2,6 +2,13 @@
 
 ### Updates
 
+08/31/21 - Applied the following patches from OpenMage Project - these patches are only applied to version 1.9.4.5
+- GHSA-m496-x567-f98c
+- GHSA-fvrf-9428-527m
+- GHSA-52c6-6v3v-f3fg
+- GHSA-hj6w-xrv3-wjj9
+- GHSA-jrgf-vfw2-hj26 
+
 11/30/20 - Applied patch update APSB20-47 from OpenMage Project - https://github.com/OpenMage/magento-lts/pull/1138
 
 06/25/20 - Updated to include patch SUPEE-11346
